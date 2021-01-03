@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "985389907869",
+    "project_id": "chatapp-70802",
+    "storage_bucket": "chatapp-70802.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985389907869:android:596e0cf8845a030e92f974",
+        "android_client_info": {
+          "package_name": "com.example.we_talk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "985389907869-faqf7bg33ttc16e9qlpp71qpqo8os8de.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4RdTAOTEv1XdEymqYWI__YeftDPW_suQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "985389907869-faqf7bg33ttc16e9qlpp71qpqo8os8de.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
