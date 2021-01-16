@@ -9,10 +9,10 @@ Widget appBarMain(BuildContext context) {
   );
 }
 
-InputDecoration textFieldInputDecoration(String hintText) {
+InputDecoration textFieldDecoration(String hintText) {
   return InputDecoration(
       hintText: hintText,
-      hintStyle: TextStyle(color: Colors.white54),
+      hintStyle: TextStyle(color: Colors.white),
       focusedBorder:
           UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
       enabledBorder:
@@ -20,9 +20,5 @@ InputDecoration textFieldInputDecoration(String hintText) {
 }
 
 TextStyle simpleTextStyle() {
-  return TextStyle(color: Colors.white);
-}
-
-TextStyle meidumTextStyle() {
-  return TextStyle(color: Colors.white, fontSize: 17);
+  return TextStyle(color: Colors.white, fontSize: 16);
 }

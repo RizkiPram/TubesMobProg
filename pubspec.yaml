@@ -1,4 +1,4 @@
-name: we_talk
+name: we_talk1
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   firebase_auth: ^0.18.4+1
   cloud_firestore: ^0.14.4
+  shared_preferences: ^0.5.7
 
 dev_dependencies:
   flutter_test:
@@ -47,9 +48,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-
   assets:
-    - assets/images/
+   - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

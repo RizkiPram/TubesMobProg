@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "985389907869",
-    "project_id": "chatapp-70802",
-    "storage_bucket": "chatapp-70802.appspot.com"
+    "project_number": "964372046780",
+    "project_id": "we-talk1",
+    "storage_bucket": "we-talk1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:985389907869:android:596e0cf8845a030e92f974",
+        "mobilesdk_app_id": "1:964372046780:android:32bfd848b2f9dd887341b9",
         "android_client_info": {
-          "package_name": "com.example.we_talk"
+          "package_name": "com.example.we_talk1"
         }
       },
       "oauth_client": [
         {
-          "client_id": "985389907869-faqf7bg33ttc16e9qlpp71qpqo8os8de.apps.googleusercontent.com",
+          "client_id": "964372046780-ip79ov73vqm2g17br9cenbg5kt7pf69m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4RdTAOTEv1XdEymqYWI__YeftDPW_suQ"
+          "current_key": "AIzaSyCw9sF8CoGy5t31IGofgS6EsyU5i1i0ZrI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "985389907869-faqf7bg33ttc16e9qlpp71qpqo8os8de.apps.googleusercontent.com",
+              "client_id": "964372046780-ip79ov73vqm2g17br9cenbg5kt7pf69m.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

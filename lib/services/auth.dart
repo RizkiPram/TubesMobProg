@@ -1,18 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:we_talk/modal/user.dart';
+import 'dart:async';
 
-class AuthMetods {
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:we_talk1/models/user.dart';
+
+class AuthMethod {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  UserClass _userFromFireBase(User user) {
+
+  UserClass _userFromFireBaseUser(User user) {
     return user != null ? UserClass(userId: user.uid) : null;
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      User user = userCredential.user;
-      return _userFromFireBase(user);
+      User firebaseUser = result.user;
+      return _userFromFireBaseUser(firebaseUser);
     } catch (e) {
       print(e);
     }
@@ -20,16 +23,16 @@ class AuthMetods {
 
   Future signUpWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-      User user = userCredential.user;
-      return _userFromFireBase(user);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      User firebaseUser = result.user;
+      return _userFromFireBaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());
     }
   }
 
-  Future resetPass(String email) async {
+  Future resetPassword(String email) async {
     try {
       return await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
