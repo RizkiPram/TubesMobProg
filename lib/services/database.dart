@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:we_talk1/views/ChatRoomScreen.dart';
 
 class DatabaseMethod {
   getUserByUsername(String username) async {
@@ -45,6 +46,14 @@ class DatabaseMethod {
         .collection("ChatRoom")
         .doc(chatRoomId)
         .collection("chats")
+        .orderBy("time", descending: false)
+        .snapshots();
+  }
+
+  getChatRoom(String userName) async {
+    return await FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .where("users", arrayContains: userName)
         .snapshots();
   }
 }
