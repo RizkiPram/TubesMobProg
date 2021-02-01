@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:we_talk1/models/user.dart';
 
-class AuthMethod {
+class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserClass _userFromFireBaseUser(User user) {
@@ -17,7 +17,8 @@ class AuthMethod {
       User firebaseUser = result.user;
       return _userFromFireBaseUser(firebaseUser);
     } catch (e) {
-      print(e);
+      print(e.toString());
+      return null;
     }
   }
 
@@ -29,20 +30,25 @@ class AuthMethod {
       return _userFromFireBaseUser(firebaseUser);
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
-  Future resetPassword(String email) async {
+  Future resetPass(String email) async {
     try {
       return await _auth.sendPasswordResetEmail(email: email);
     } catch (e) {
       print(e.toString());
+      return null;
     }
   }
 
   Future signOut() async {
     try {
       return await _auth.signOut();
-    } catch (e) {}
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 }

@@ -2,47 +2,71 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:we_talk1/helper/constans.dart';
 import 'package:we_talk1/services/database.dart';
-import 'package:we_talk1/views/ConversationScreen.dart';
+import 'package:we_talk1/views/chat.dart';
 import 'package:we_talk1/widget/widget.dart';
 
-class SearchScreen extends StatefulWidget {
+class Search extends StatefulWidget {
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  _SearchState createState() => _SearchState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
-  DatabaseMethod databaseMethod = new DatabaseMethod();
+class _SearchState extends State<Search> {
+  DatabaseMethods databaseMethods = new DatabaseMethods();
   TextEditingController searchController = new TextEditingController();
   QuerySnapshot searchSnapShot;
 
-  initiateSearch() {
-    databaseMethod.getUserByUsername(searchController.text).then((val) {
-      setState(() {
-        searchSnapShot = val;
-      });
-    });
-  }
+  bool isLoading = false;
+  bool haveUserSearched = false;
 
-  //chatroom,send user
-  createChatRoomAndStartConversation({String userName}) {
-    if (userName != Constanst.myName) {
-      String chatRoomId = getChatRoomId(userName, Constanst.myName);
-      List<String> users = [userName, Constanst.myName];
-      Map<String, dynamic> chatRoomMap = {
-        "users": users,
-        "chatroomId": chatRoomId
-      };
-      DatabaseMethod().createChatRoom(chatRoomId, chatRoomMap);
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ConversationScreen(chatRoomId)));
-    } else {
-      print("You Cannot Send Message to this username");
+  initiateSearch() async {
+    if (searchController.text.isNotEmpty) {
+      setState(() {
+        isLoading = true;
+      });
+      await databaseMethods
+          .searchByName(searchController.text)
+          .then((snapshot) {
+        searchSnapShot = snapshot;
+        print("$searchSnapShot");
+        setState(() {
+          isLoading = false;
+          haveUserSearched = true;
+        });
+      });
     }
   }
 
-  Widget SearchTile({String userName, String userEmail}) {
+  Widget userList() {
+    return haveUserSearched
+        ? ListView.builder(
+            shrinkWrap: true,
+            itemCount: searchSnapShot.docs.length,
+            itemBuilder: (context, index) {
+              return userTile(
+                searchSnapShot.docs[index].data()["userName"],
+                searchSnapShot.docs[index].data()["userEmail"],
+              );
+            })
+        : Container();
+  }
+
+  sendMessage(String userName) {
+    List<String> users = [Constants.myName, userName];
+
+    String chatRoomId = getChatRoomId(Constants.myName, userName);
+
+    Map<String, dynamic> chatRoom = {
+      "users": users,
+      "chatRoomId": chatRoomId,
+    };
+
+    databaseMethods.addChatRoom(chatRoom, chatRoomId);
+
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Chat(chatRoomId: chatRoomId)));
+  }
+
+  Widget userTile(String userName, String userEmail) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Row(
@@ -52,24 +76,27 @@ class _SearchScreenState extends State<SearchScreen> {
             children: [
               Text(
                 userName,
-                style: simpleTextStyle(),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               Text(
                 userEmail,
-                style: simpleTextStyle(),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               )
             ],
           ),
           Spacer(),
           GestureDetector(
             onTap: () {
-              createChatRoomAndStartConversation(userName: userName);
+              sendMessage(userName);
             },
             child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(35)),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text("Message"),
+                  color: Colors.blue, borderRadius: BorderRadius.circular(24)),
+              child: Text(
+                "Message",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ),
           )
         ],
@@ -77,71 +104,81 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget searchList() {
-    return searchSnapShot != null
-        ? ListView.builder(
-            itemCount: searchSnapShot.docs.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              return SearchTile(
-                userName: searchSnapShot.docs[index].data()["name"],
-                userEmail: searchSnapShot.docs[index].data()["email"],
-              );
-            })
-        : Container();
+  getChatRoomId(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$b\_$a";
+    } else {
+      return "$a\_$b";
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBarMain(context),
-      body: Container(
-        child: Column(
-          children: [
-            Container(
-              color: Color(0x54FFFFFF),
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: TextField(
-                          controller: searchController,
-                          style: TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                              hintText: "search username....",
-                              hintStyle: TextStyle(color: Colors.white),
-                              border: InputBorder.none))),
-                  GestureDetector(
-                    onTap: () {
-                      initiateSearch();
-                    },
-                    child: Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [
-                              const Color(0x36FFFFFF),
-                              const Color(0x0FFFFFFF)
-                            ]),
-                            borderRadius: BorderRadius.circular(40)),
-                        padding: EdgeInsets.all(10),
-                        child: Image.asset("assets/images/search_white.png")),
-                  )
-                ],
-              ),
-            ),
-            searchList()
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-getChatRoomId(String a, String b) {
-  if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-    return "$b\_$a";
-  } else {
-    return "$a\_$b";
+        appBar: appBarMain(context),
+        body: isLoading
+            ? Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : Container(
+                child: Column(
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      color: Color(0x54FFFFFF),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: searchController,
+                              style: simpleTextStyle(),
+                              decoration: InputDecoration(
+                                  hintText: "search username ...",
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  border: InputBorder.none),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              initiateSearch();
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                        const Color(0x36FFFFFF),
+                                        const Color(0x0FFFFFFF)
+                                      ],
+                                      begin: FractionalOffset.topLeft,
+                                      end: FractionalOffset.bottomRight),
+                                  borderRadius: BorderRadius.circular(40)),
+                              padding: EdgeInsets.all(12),
+                              child: Image.asset(
+                                "assets/images/search_white.png",
+                                height: 25,
+                                width: 25,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    userList()
+                  ],
+                ),
+              ));
   }
 }
