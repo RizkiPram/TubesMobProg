@@ -1,69 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:we_talk1/views/ChatRoomScreen.dart';
 
-class DatabaseMethods {
-  Future<void> addUserInfo(userData) async {
-    FirebaseFirestore.instance
+class DatabaseMethod {
+  getUserByUsername(String username) async {
+    return await FirebaseFirestore.instance
         .collection("users")
-        .add(userData)
-        .catchError((e) {
-      print(e.toString());
-    });
-  }
-
-  getUserInfo(String email) async {
-    return FirebaseFirestore.instance
-        .collection("users")
-        .where("userEmail", isEqualTo: email)
-        .get()
-        .catchError((e) {
-      print(e.toString());
-    });
-  }
-
-  searchByName(String searchField) {
-    return FirebaseFirestore.instance
-        .collection("users")
-        .where('userName', isEqualTo: searchField)
+        .where("name", isEqualTo: username)
         .get();
   }
 
-  // ignore: missing_return
-  Future<bool> addChatRoom(chatRoom, chatRoomId) {
-    FirebaseFirestore.instance
-        .collection("chatRoom")
-        .doc(chatRoomId)
-        .set(chatRoom)
-        .catchError((e) {
-      print(e);
-    });
+  getUserByUserEmail(String userEmail) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .where("email", isEqualTo: userEmail)
+        .get();
   }
 
-  getChats(String chatRoomId) async {
-    return FirebaseFirestore.instance
-        .collection("chatRoom")
-        .doc(chatRoomId)
-        .collection("chats")
-        .orderBy('time')
-        .snapshots();
+  uploadUserInfo(userMap) {
+    FirebaseFirestore.instance.collection("users").add(userMap);
   }
 
-  // ignore: missing_return
-  Future<void> addMessage(String chatRoomId, chatMessageData) {
+  createChatRoom(String chatRoomId, chatRoomMap) {
     FirebaseFirestore.instance
-        .collection("chats")
+        .collection("ChatRoom")
         .doc(chatRoomId)
-        .collection("chats")
-        .add(chatMessageData)
+        .set(chatRoomMap)
         .catchError((e) {
       print(e.toString());
     });
   }
 
-  getuserChats(String itIsMyName) async {
-    // ignore: await_only_futures
+  addConversationMessages(String chatRoomId, messageMap) {
+    FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .doc(chatRoomId)
+        .collection("chats")
+        .add(messageMap)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
+
+  getConversationMessages(String chatRoomId) async {
     return await FirebaseFirestore.instance
-        .collection("chatRoom")
-        .where('users', arrayContains: itIsMyName)
+        .collection("ChatRoom")
+        .doc(chatRoomId)
+        .collection("chats")
+        .orderBy("time", descending: false)
+        .snapshots();
+  }
+
+  getChatRoom(String userName) async {
+    return await FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .where("users", arrayContains: userName)
         .snapshots();
   }
 }

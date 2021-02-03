@@ -1,0 +1,9 @@
+diff a/lib/main.dart b/lib/main.dart	(rejected hunks)
+@@ -22,7 +22,6 @@
+   }
+ 
+   getLoggedInState() async {
+-    SharedPreferences.setMockInitialValues({});
+     await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
+       setState(() {
+         userIsLoggedIn = value;

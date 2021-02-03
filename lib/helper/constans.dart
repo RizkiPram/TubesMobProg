@@ -1,4 +1,3 @@
-class Constants {
+class Constanst {
   static String myName = "";
 }
-
